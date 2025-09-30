@@ -4,6 +4,8 @@ import {Result} from "./routes/Result"
 import {Game} from "./routes/Game"
 import { SocketProvider } from "./socketLib/socketContext";
 import { GameProvider } from "./components/GameContext";
+import { TableProvider } from "./components/TableContext";
+import {ErrorBoundary} from "./components/ErrorBoundary";
 
 
 const routesConfig: Record<string, any>[] = [
@@ -19,15 +21,19 @@ const routesConfig: Record<string, any>[] = [
 function App() {
 	
 	return (
-		<SocketProvider>
-			<GameProvider>
-				<Routes>
-					{
-						routesConfig.map((route) => <Route {...route} />)
-					}
-				</Routes>
-			</GameProvider>
-		</SocketProvider>
+		<ErrorBoundary>
+			<SocketProvider>
+				<GameProvider>
+					<TableProvider>
+						<Routes>
+							{
+								routesConfig.map((route) => <Route {...route} />)
+							}
+						</Routes>
+					</TableProvider>
+				</GameProvider>
+			</SocketProvider>
+		</ErrorBoundary>
 	)
 }
 

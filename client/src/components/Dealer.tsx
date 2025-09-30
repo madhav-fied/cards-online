@@ -6,10 +6,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography"
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { countHand } from '../utils/cards';
 
 
 export interface DealerProps {
-	cards: Array<CardProps>
+	cards: Array<CardProps>;
+	canPlay: boolean
 }
 
 const sxDealer: any = {
@@ -32,7 +34,7 @@ const sxCardContent: any = {
 
 export const Dealer = ({cards}: DealerProps) => {
 	const cardValue = useMemo(() => {
-		return "21";
+		return countHand(cards);
 	}, [cards]);
 
 	return (

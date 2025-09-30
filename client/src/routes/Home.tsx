@@ -65,9 +65,16 @@ export const Home = () => {
 	}, []);
 	
 	function createRoom() {
+		console.log(`creating a room for ${playerName}`)
 		socket.timeout(5000).emit('create_room', playerName, (err: any, res: any) => {
-			console.log(res);
-			console.error(err);
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			if (res.type == 'error'){
+				throw new Error(res.message);
+			}
 			setPlayerId(res.playerId);
 			setGameId(res.gameId);
 			navigate(`/game/${res.gameId}`);
@@ -76,8 +83,15 @@ export const Home = () => {
 
 	function joinRoom() {
 		socket.timeout(5000).emit('join_room', playerName, roomCode, (err: any, res: any) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			if (res.type == 'error') {
+				throw new Error(res.message);
+			}
 			console.log(res);
-			console.error(err);
 			setPlayerId(res.playerId);
 			setGameId(res.gameId);
 			navigate(`/game/${res.gameId}`);

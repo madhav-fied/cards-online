@@ -1,20 +1,25 @@
-import { useContext, createContext, useEffect } from "react";
-import { io } from 'socket.io-client'
+import { useContext, createContext, useRef } from "react";
+import { io, Socket } from 'socket.io-client'
 
 const URL = 'http://localhost:56789';
 const SocketContext = createContext<any>(null);
 
 export const SocketProvider = ({children} : any) => {
-    const socket = io(URL);
+    const socketRef = useRef<Socket | null>(null);
+
+    if (!socketRef.current) {
+        socketRef.current = io(URL);
+    }
     
-    useEffect(() => {
-        return () => {
-            socket.disconnect();
-        }
-    }, [])
+    // useEffect(() => {
+    //     return () => {
+    //         console.log("disconnecting socket")
+    //         socketRef.current?.disconnect();
+    //     }
+    // }, [])
 
     return (
-        <SocketContext.Provider value={socket}>
+        <SocketContext.Provider value={socketRef.current}>
             {children}
         </SocketContext.Provider>
     );

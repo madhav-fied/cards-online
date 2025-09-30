@@ -19,23 +19,23 @@ interface IDealer {
 }
 
 export interface ITable {
-    tableId: string,
+    tableId?: string,
     phase: "playing" | "ended" | "waiting",
-    turn: string,
-    dealer: IDealer,
-    players: Array<IPlayers>
+    turn?: string,
+    dealer?: IDealer,
+    players?: Array<IPlayers>
 }
 
-type TableContextType = {
-    tableState: ITable | null,
-    setTableState: any,
+interface TableContextType {
+    tableState: ITable;
+    setTableState: React.Dispatch<React.SetStateAction<ITable>>;
 }
 
-// @ts-ignore
-const TableContext = createContext<TableContextType>(null);
+
+const TableContext = createContext<TableContextType | null>(null);
 
 export const TableProvider = ({children} : any) => {
-    const [tableState, setTableState] = useState<ITable | null>(null);
+    const [tableState, setTableState] = useState<ITable>({phase: "waiting"});
     
 
     return (
@@ -45,4 +45,10 @@ export const TableProvider = ({children} : any) => {
     );
 }
 
-export const useTable = () => useContext(TableContext);
+export const useTable = () => {
+    const ctx = useContext(TableContext);
+    if (!ctx) {
+        throw new Error("Provider is not there for Table");
+    }
+    return ctx;
+}
