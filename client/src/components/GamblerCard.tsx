@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import {CardList} from "../components/CardList";
 import type {CardProps} from "../components/Card";
+import { countHand } from '../utils/cards';
 
 export interface GamblerCardProps {
 	name: string 
@@ -34,7 +35,7 @@ const sxCardContent: any = {
 
 export const GamblerCard = ({name, cards, bank, wager, status}: GamblerCardProps) => {
 	const cardValue = useMemo(() => {
-		return "21";
+		return countHand(cards)
 	}, [cards]);
 
 	const cardStatusColor: string | null = useMemo(() => {

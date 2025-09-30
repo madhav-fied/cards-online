@@ -14,8 +14,10 @@ import {Player} from "../components/Player"
 import {Dealer} from "../components/Dealer"
 import { useSocket } from '../socketLib/socketContext';
 import { useGame } from '../components/GameContext';
-import { useEffect } from 'react';
-import { useTable } from '../components/TableContext';
+import { useEffect, useState } from 'react';
+import { useTable, type ITable } from '../components/TableContext';
+import { Button } from '@mui/material';
+import { ResultsModal, type IResultsProps } from '../components/ResultsModal';
 
 
 const sxNavbar: any = {
@@ -47,20 +49,44 @@ const sxGame: any = {
 	padding: '0.5vh 0.5vw',
 }
 
+const sxGrid: any = {
+	width: '100%',
+}
+
 
 export const Game = () => {
 	const {playerId, gameId} = useGame();
 	const socket = useSocket();
-	
-
-	const {tableState, setTableState} = useTable(); 
-
+	const {tableState, setTableState} = useTable();
+	const [result, setResult] = useState<IResultsProps | undefined>(undefined);
 	
 	useEffect(() => {
-		socket.on("table_update", (res: any) => {
-			setTableState(res.state);
+		socket.on("table_update", (newState: ITable) => {
+			setTableState(newState);
 		});
+
+		socket.on("game_end", (result: IResultsProps) => {
+			console.log(result);
+			if (result) {
+				setResult(result);
+			}
+		})
 	}, [])
+
+	function getGame() {
+		socket.timeout(5000).emit("get_game", gameId, playerId, (err: any, res: any) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			if (res.type == 'error'){
+				throw new Error(res.message);
+			}
+			setTableState(res.state);
+			setResult(undefined);
+		});
+	}
 
 
 	return (
@@ -69,54 +95,57 @@ export const Game = () => {
 				<Typography variant="h4">BlackJack</Typography>
 				<Avatar>N</Avatar>
 			</Box>
-			<h2>
-				gameid={gameId}
-			</h2>
+			{ 
+				tableState.phase == 'waiting' ? (
+					<Button onClick={getGame}> Click to Begin </Button>	
+				):(
+					<>
+					<Box id="game" sx={sxGame}>
 
+						<Box id="table" sx={sxTable}>
+						{ result ? <ResultsModal {...result}/> : null }
+						<Grid container spacing={2} sx={sxGrid}>
 
-			<Box id="game" sx={sxGame}>
+							<Grid size={12}>
+								{
+									tableState?.dealer?.cards &&	<Dealer cards={tableState?.dealer.cards} canPlay={tableState.turn == "dealer"} />
+								}
+							</Grid>
 
-				<Box id="table" sx={sxTable}>
-				<Grid container spacing={2}>
+							<Grid size={12}>
+								{
+									tableState?.players?.map((player) => {
+										if (player.playerId != playerId) return null;
 
-					<Grid size={12}>
-						{
-							tableState?.dealer.cards &&	<Dealer cards={tableState?.dealer.cards} />
-						}
-					</Grid>
+										return (
+											<Grid size={6}>
+												<Player cards={player.hand.cards} name={player.name} bank={player.bank} wager={player.hand.wager} status={player.hand.status}/>
+											</Grid>
+										)
+									})
+								}
+							</Grid>
 
-					<Grid size={12}>
-						{
-							tableState?.players.map((player) => {
-								if (player.playerId != playerId) return null;
+							<Grid size={12}>
+								<Grid container spacing={2}>
+									{
+										tableState?.players?.map((player) => {
+											if (player.playerId == playerId) return null;
 
-								return (
-									<Grid size={6}>
-										<Player cards={player.hand.cards} name={player.name} bank={player.bank} wager={player.hand.wager} status={player.hand.status}/>
-									</Grid>
-								)
-							})
-						}
-					</Grid>
-
-					<Grid size={12}>
-						<Grid container spacing={2}>
-							{
-								tableState?.players.map((player) => {
-									if (player.playerId == playerId) return null;
-
-									return (
-										<Grid size={6}>
-											<GamblerCard name={player.name} bank={player.bank} wager={player.hand.wager} cards={player.hand.cards} status={player.hand.status}/>
-										</Grid>
-									)
-								})
-							}
+											return (
+												<Grid size={6}>
+													<GamblerCard name={player.name} bank={player.bank} wager={player.hand.wager} cards={player.hand.cards} status={player.hand.status}/>
+												</Grid>
+											)
+										})
+									}
+								</Grid>
+							</Grid>
 						</Grid>
-					</Grid>
-				</Grid>
-				</Box>
-			</Box>
+						</Box>
+					</Box>
+					</>
+			)}
 		</>
 	)
 }

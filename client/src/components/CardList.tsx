@@ -3,6 +3,7 @@ import {Card} from "./Card";
 import type {CardProps} from "./Card"  
 
 
+
 export interface CardListProps {
 	cards: Array<CardProps>
 	size?: number
@@ -25,7 +26,7 @@ export const CardList = ({cards, size = 3, stacked = false} : CardListProps) => 
 		<div style={cardListStyle}>
 			{
 				cards.map((card, idx) => (
-					<div style={stacked ? {...stackedStyle, zIndex: idx,} : undefined}>
+					<div key={crypto.randomUUID()} style={stacked ? {...stackedStyle, zIndex: idx,} : undefined}>
 						<Card size={size} {...card} />
 					</div>
 				)) 

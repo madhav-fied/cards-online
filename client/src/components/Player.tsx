@@ -15,7 +15,8 @@ import type {CardProps} from "../components/Card";
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useSocket } from '../socketLib/socketContext';
-import { useParams } from 'react-router';
+import { useGame } from './GameContext';
+import { countHand } from '../utils/cards';
 
 export interface PlayerProps {
 	name: string
@@ -47,21 +48,21 @@ const sxCardContent: any = {
 
 export const Player = ({name, cards, bank, wager, status}: PlayerProps) => {
 	const socket = useSocket();
-	const { game_id } = useParams();
+	const {playerId, gameId} = useGame();
 
 	const cardValue = useMemo(() => {
-		return "21";
+		return countHand(cards);
 	}, [cards]);
 
 	const handlePlayerHit = useCallback((_: any) => {
-		socket.timeout(5000).emit('player_hit', game_id, (err: any, res: any) => {
+		socket.timeout(5000).emit('player_hit', gameId, playerId, (err: any, res: any) => {
 			console.log(res);
 			console.error(err);
 		})
 	}, [socket])
 
 	const handlePlayerStand = useCallback((_: any) => {
-		socket.timeout(5000).emit('player_stand', game_id, (err: any, res: any) => {
+		socket.timeout(5000).emit('player_stand', gameId, playerId, (err: any, res: any) => {
 			console.log(res);
 			console.error(err);
 		})
@@ -111,7 +112,7 @@ export const Player = ({name, cards, bank, wager, status}: PlayerProps) => {
 									      		},
 									    	}}
 									/>
-								))}
+							))}
 						</SpeedDial>
 					</CardContent>
 				</Card>
