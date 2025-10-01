@@ -1,9 +1,7 @@
 import { Socket } from "socket.io"
-import { getNewGame, getNewRound, IPlayers, ITable, updateBanks } from "../services/game.js"
+import { dealFreshForPlayer, getNewGame, getNewRound, IPlayers, ITable, updateBanks } from "../services/game.js"
 import { getRoomById, removePlayerFromRoom } from "./room.socket.js"
 import { executeDealerPlay, executeHit, executeStand, getResult } from "../services/state.js"
-
-
 
 
 let games: Record<string, ITable> = {}
@@ -13,7 +11,7 @@ const simulateDealerPlay = (io: any, gameId: string) => {
         let game = games[gameId];
         let updatedState = executeDealerPlay(game);
         games[gameId] = updatedState
-        io.emit("table_update", updatedState);
+        io.to(gameId).emit("table_update", updatedState);
 
         if (updatedState.phase == "ended") {
             clearInterval(interval);
@@ -21,26 +19,34 @@ const simulateDealerPlay = (io: any, gameId: string) => {
             let result = getResult(game);
             let finalState = updateBanks(game, result);
             games[gameId] = finalState;
-            io.emit("table_update", finalState);
-            io.emit("game_end", result);
+            io.to(gameId).emit("table_update", finalState);
+            io.to(gameId).emit("game_end", result);
         }
     }, 1500);
 }
 
 export const gameSocket = (socket: Socket, io: any) => {
     socket.on("get_game", (gameId: string, playerId: string, callback: any) => {
+        socket.join(gameId)
         if (gameId in games) {
+            let game = games[gameId];
+            let updatedGame = dealFreshForPlayer(game, playerId)
+            games[gameId] = updatedGame;
+            io.to(gameId).emit("table_update", updatedGame)
             callback({
                 type: "success",
                 state: games[gameId],
             })
-            // add a new player to the game
+            
+            return;
         }
 
         const room = getRoomById(gameId);
         const game = getNewGame(room);
         games[game.tableId] = game;
         // console.log(JSON.stringify(games, null, 4));
+
+        io.to(gameId).emit("table_update", game)
         callback({
             type: "success",
             state: game,
@@ -52,7 +58,7 @@ export const gameSocket = (socket: Socket, io: any) => {
         let updatedState = executeHit(game, playerId);
         games[gameId] = updatedState;
         console.log("emmitting updated state after player hit")
-        io.emit('table_update', updatedState);
+        io.to(gameId).emit('table_update', updatedState);
 
         if (updatedState.turn == "dealer") simulateDealerPlay(io, gameId);
     })
@@ -62,7 +68,7 @@ export const gameSocket = (socket: Socket, io: any) => {
         let updatedState = executeStand(game, playerId);
         games[gameId] = updatedState;
         console.log("emmitting updated state after player stand")
-        io.emit('table_update', updatedState);
+        io.to(gameId).emit('table_update', updatedState);
 
         if (updatedState.turn == "dealer") simulateDealerPlay(io, gameId);
     })
@@ -99,7 +105,7 @@ export const gameSocket = (socket: Socket, io: any) => {
                     name: game.players[idx].name,
                     bank: game.players[idx].bank,
                     hand: {
-                        status: "playing",
+                        status: playerId == game.players[idx].playerId ? "playing" : "idle",
                         wager: "5",
                         cards: cards,
                     }

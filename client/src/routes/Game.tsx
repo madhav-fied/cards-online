@@ -83,7 +83,7 @@ export const Game = () => {
 			if (res.type == 'error'){
 				throw new Error(res.message);
 			}
-			setTableState(res.state);
+			// setTableState(res.state);
 			setResult(undefined);
 		});
 	}
@@ -118,7 +118,7 @@ export const Game = () => {
 										if (player.playerId != playerId) return null;
 
 										return (
-											<Grid size={6}>
+											<Grid size={12}>
 												<Player cards={player.hand.cards} name={player.name} bank={player.bank} wager={player.hand.wager} status={player.hand.status}/>
 											</Grid>
 										)

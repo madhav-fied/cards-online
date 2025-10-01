@@ -119,7 +119,6 @@ export const getNewGame = (currentRoom: Room): ITable => {
     }
 }
 
-
 export const updateBanks = (game: ITable, result: IResult | undefined) => {
     if (!result) return game;
 
@@ -130,5 +129,20 @@ export const updateBanks = (game: ITable, result: IResult | undefined) => {
             }
         })
     })
+    return game;
+}
+
+export const dealFreshForPlayer = (game: ITable, playerId: string) => {
+    game.players.forEach((player) => {
+        if (player.playerId == playerId && player.hand.status != "playing") {
+            let newHand = []
+            for (let c = 0; c < 2; c++) {
+                newHand.push(game.deck[game.cardIdx++])
+            }
+
+            player.hand.cards = newHand;
+        }
+    })
+
     return game;
 }

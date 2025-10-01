@@ -44,7 +44,7 @@ export const ResultsModal = ({dealerValue, players}: IResultsProps) => {
     const {playerId, gameId} = useGame();
     const socket = useSocket();
     let navigate = useNavigate();
-    const {tableState, setTableState} = useTable();
+    const {setTableState} = useTable();
 
     const onGameExit = useCallback(() => {
         socket.timeout(5000).emit('remove_player', playerId, gameId, (err: any, res: any) => {
