@@ -6,12 +6,14 @@ import { SocketProvider } from "./socketLib/socketContext";
 import { GameProvider } from "./components/GameContext";
 import { TableProvider } from "./components/TableContext";
 import {ErrorBoundary} from "./components/ErrorBoundary";
+import { Lobby } from "./routes/Lobby";
 
 
 const routesConfig: Record<string, any>[] = [
 	{path: "/", element: <Home />},
 	{path: "result", element: <Result />},
-	{path: "game/:game_id", element: <Game />}
+	{path: "game/:game_id", element: <Game />},
+	{path: "lobby/:game_id", element: <Lobby />},
 ]
 
 

@@ -16,7 +16,6 @@ import { useSocket } from '../socketLib/socketContext';
 import { useGame } from '../components/GameContext';
 import { useEffect, useState } from 'react';
 import { useTable, type ITable } from '../components/TableContext';
-import { Button } from '@mui/material';
 import { ResultsModal, type IResultsProps } from '../components/ResultsModal';
 
 
@@ -55,7 +54,7 @@ const sxGrid: any = {
 
 
 export const Game = () => {
-	const {playerId, gameId} = useGame();
+	const {playerId} = useGame();
 	const socket = useSocket();
 	const {tableState, setTableState} = useTable();
 	const [result, setResult] = useState<IResultsProps | undefined>(undefined);
@@ -73,32 +72,15 @@ export const Game = () => {
 		})
 	}, [])
 
-	function getGame() {
-		socket.timeout(5000).emit("get_game", gameId, playerId, (err: any, res: any) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-
-			if (res.type == 'error'){
-				throw new Error(res.message);
-			}
-			// setTableState(res.state);
-			setResult(undefined);
-		});
-	}
-
-
 	return (
 		<>
 			<Box id="navbar" sx={sxNavbar}>
 				<Typography variant="h4">BlackJack</Typography>
-				<Avatar>N</Avatar>
+				<Avatar></Avatar>
 			</Box>
 			{ 
-				tableState.phase == 'waiting' ? (
-					<Button onClick={getGame}> Click to Begin </Button>	
-				):(
+				tableState.phase != "lobby" && 
+				(
 					<>
 					<Box id="game" sx={sxGame}>
 

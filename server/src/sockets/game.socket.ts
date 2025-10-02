@@ -26,31 +26,18 @@ const simulateDealerPlay = (io: any, gameId: string) => {
 }
 
 export const gameSocket = (socket: Socket, io: any) => {
-    socket.on("get_game", (gameId: string, playerId: string, callback: any) => {
+    socket.on("begin_game", (gameId: string, callback: any) => {       
+        // TODO: error handling
         socket.join(gameId)
-        if (gameId in games) {
-            let game = games[gameId];
-            let updatedGame = dealFreshForPlayer(game, playerId)
-            games[gameId] = updatedGame;
-            io.to(gameId).emit("table_update", updatedGame)
-            callback({
-                type: "success",
-                state: games[gameId],
-            })
-            
-            return;
-        }
-
         const room = getRoomById(gameId);
         const game = getNewGame(room);
         games[game.tableId] = game;
-        // console.log(JSON.stringify(games, null, 4));
 
-        io.to(gameId).emit("table_update", game)
         callback({
             type: "success",
-            state: game,
         })
+
+        io.to(gameId).emit("game_start", game)
     })
 
     socket.on("player_hit", (gameId: string, playerId: string, callback: any) => {
@@ -84,39 +71,4 @@ export const gameSocket = (socket: Socket, io: any) => {
 			type: "success"
 		})
 	})
-
-    socket.on('rejoin_room', (playerId: string, gameId: string, callback: any) => {
-        let game = games[gameId];
-        let newRound = getNewRound(game.players.length);
-        console.log(`${playerId} rejoining room ${gameId}`);
-        
-        let newGame: ITable = {
-            tableId: gameId,
-            phase: "playing",
-            deck: newRound.deck,
-            turn:  game.players[0].playerId,
-            cardIdx: newRound.cardIdx,
-            dealer: {
-                cards: newRound.dealerCards,
-            },
-            players: newRound.playerCards.map((cards, idx) => {
-                return {
-                    playerId: game.players[idx].playerId,
-                    name: game.players[idx].name,
-                    bank: game.players[idx].bank,
-                    hand: {
-                        status: playerId == game.players[idx].playerId ? "playing" : "idle",
-                        wager: "5",
-                        cards: cards,
-                    }
-                }
-            })
-        }
-
-        games[gameId] = newGame;
-
-        callback({
-            type: "success",
-        })
-    })
 }

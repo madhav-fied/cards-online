@@ -26,16 +26,32 @@ export const executeHit = (state: ITable, playerId: string) => {
             }
         }
     })
+
+    state.players.forEach((player) => {
+        if (player.playerId == state.turn) {
+            player.hand.status = "playing"
+        }
+    })
+    
     return state
 }
 
 export const executeStand = (state: ITable, playerId: string) => {
+    // TODO(long term): state change should trigger side effects
+    // turn update should update player status
     state.players.forEach((player) => {
         if (player.playerId == playerId) {
             player.hand.status = "standing"
             state.turn = getNextTurn(state)
         }
     })
+
+    state.players.forEach((player) => {
+        if (player.playerId == state.turn) {
+            player.hand.status = "playing"
+        }
+    })
+
     return state;
 }
 

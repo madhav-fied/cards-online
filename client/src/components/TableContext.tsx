@@ -3,11 +3,11 @@ import type {CardProps} from "./Card";
 
 interface IHand {
     wager: string,
-    status: "playing" | "standing" | "busted" | "idle",
+    status: "playing" | "standing" | "busted",
     cards: Array<CardProps>
 }
 
-interface IPlayers {
+export interface IPlayers {
     playerId: string,
     name: string,
     bank: string,
@@ -20,7 +20,8 @@ interface IDealer {
 
 export interface ITable {
     tableId?: string,
-    phase: "playing" | "ended" | "waiting",
+    hostId: string
+    phase: "playing" | "ended" | "lobby",
     turn?: string,
     dealer?: IDealer,
     players?: Array<IPlayers>
@@ -35,7 +36,7 @@ interface TableContextType {
 const TableContext = createContext<TableContextType | null>(null);
 
 export const TableProvider = ({children} : any) => {
-    const [tableState, setTableState] = useState<ITable>({phase: "waiting"});
+    const [tableState, setTableState] = useState<ITable>({hostId: "default", phase: "lobby"});
     
 
     return (

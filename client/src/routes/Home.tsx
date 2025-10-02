@@ -77,7 +77,7 @@ export const Home = () => {
 			}
 			setPlayerId(res.playerId);
 			setGameId(res.gameId);
-			navigate(`/game/${res.gameId}`);
+			navigate(`/lobby/${res.gameId}`);
 		})
 	}
 
@@ -91,10 +91,10 @@ export const Home = () => {
 			if (res.type == 'error') {
 				throw new Error(res.message);
 			}
-			console.log(res);
+
 			setPlayerId(res.playerId);
 			setGameId(res.gameId);
-			navigate(`/game/${res.gameId}`);
+			navigate(`/lobby/${res.gameId}`);
 		})
 
 	}

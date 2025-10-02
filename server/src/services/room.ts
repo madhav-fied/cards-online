@@ -7,6 +7,7 @@ export interface Player {
 
 export interface Room {
 	gameId: string;
+	host: string;
 	players: Array<Player>;
 }
 
@@ -15,8 +16,9 @@ export const generateRandomRoomCode = () => {
 }
 
 export const createRoom = (gameId: string, player: Player, rooms: Record<string, Room>) => {
-	rooms[gameId] = {
+	let newRoom = {
 		gameId: gameId,
+		host: player.playerId,
 		players: [
 			{
 				playerId: player.playerId,
@@ -24,17 +26,14 @@ export const createRoom = (gameId: string, player: Player, rooms: Record<string,
 			}
 		]
 	}
-	return rooms;
+	return newRoom;
 }
 
-export const joinRoom = (gameId: string, player: Player, rooms: Record<string, Room>) => {
-	if (!(gameId in rooms)) {
-		throw new Error(`Room with ${gameId} does not exist`)
-	}
-	rooms[gameId].players.push({
+export const joinRoom = (player: Player, room: Room) => {
+	room.players.push({
 		playerId: player.playerId,
 		playerName: player.playerName,
 	})
-	return rooms;
+	return room;
 }
 

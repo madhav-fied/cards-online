@@ -57,12 +57,18 @@ export const ResultsModal = ({dealerValue, players}: IResultsProps) => {
                 throw new Error(res.message);
             }
 
+            socket.disconnect();
+            socket.connect();
+            // TODO: default state for games??
+            // NB: always set to phase lobby to make sure loading of init stages work fine
+            setTableState({hostId: "default", phase: "lobby"});
             navigate("/")
         });
     }, [])
 
     const onGameRejoin = useCallback(() => {
-        socket.timeout(5000).emit('rejoin_room', playerId, gameId, (err: any, res: any) => {
+        let player = players.filter((p) => p.playerId == playerId)[0];
+        socket.timeout(5000).emit('rejoin_room', playerId, player.playerName, gameId, (err: any, res: any) => {
             if (err) {
                 console.error(err);
                 return;
@@ -71,8 +77,8 @@ export const ResultsModal = ({dealerValue, players}: IResultsProps) => {
             if (res.type == "error") {
                 throw new Error(res.message);
             }
-            setTableState({phase: "waiting"});
-            navigate(`/game/${gameId}`)
+            setTableState({hostId: "default", phase: "lobby"});
+            navigate(`/lobby/${gameId}`)
         })
     }, [])
 
