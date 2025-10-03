@@ -2,6 +2,7 @@ import { useContext, createContext, useRef } from "react";
 import { io, Socket } from 'socket.io-client'
 
 const URL = 'http://localhost:56789';
+// const URL = 'http://server:56789';
 const SocketContext = createContext<any>(null);
 
 export const SocketProvider = ({children} : any) => {

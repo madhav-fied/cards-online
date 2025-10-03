@@ -87,6 +87,11 @@ export const Home = () => {
 		})
 
 	}
+
+	function redirectToRules() {
+		const RULES_URL = "https://bicyclecards.com/how-to-play/blackjack";
+		window.open(RULES_URL, "_blank")?.focus()
+	}
 	
 
 
@@ -101,11 +106,6 @@ export const Home = () => {
 						<TextField id="standard" label="Room code" value={roomCode} onChange={(e) => setRoomCode(e.target.value)} />
 					</ListItem>
 					<ListItem>
-						<ListItemButton>
-							<ListItemText primary="Single player Game" />
-						</ListItemButton>
-					</ListItem>
-					<ListItem>
 						<ListItemButton onClick={joinRoom}>
 							<ListItemText primary="Join custom room" />
 						</ListItemButton>
@@ -113,6 +113,11 @@ export const Home = () => {
 					<ListItem>
 						<ListItemButton onClick={createRoom}>
 							<ListItemText primary="Create a room" />
+						</ListItemButton>
+					</ListItem>
+					<ListItem>
+						<ListItemButton onClick={redirectToRules}>
+							<ListItemText primary="Learn the game" />
 						</ListItemButton>
 					</ListItem>
 				</List>

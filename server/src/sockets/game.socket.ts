@@ -3,7 +3,7 @@ import { dealFreshForPlayer, getNewGame, getNewRound, IPlayers, ITable, updateBa
 import { getRoomById, removePlayerFromRoom } from "./room.socket.js"
 import { executeDealerPlay, executeHit, executeStand, getResult } from "../services/state.js"
 
-
+// TODO: move to redis for scale
 let games: Record<string, ITable> = {}
 
 const simulateDealerPlay = (io: any, gameId: string) => {

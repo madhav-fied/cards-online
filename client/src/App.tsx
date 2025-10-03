@@ -10,8 +10,6 @@ import { Lobby } from "./routes/Lobby";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography"
 import Avatar from "@mui/material/Avatar"
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
 import Badge from "@mui/material/Badge";
 
 
@@ -41,10 +39,6 @@ function App() {
 					<TableProvider>
 						<Box id="navbar" sx={sxNavbar}>
 							<Typography variant="h4">BlackJack</Typography>
-							<Stack direction="row" spacing={3}>
-								<Button>Learn</Button>
-								<Button>Sponsor</Button>
-							</Stack>
 							<Badge color="success" variant="dot">
 								<Avatar></Avatar>
 							</Badge>
