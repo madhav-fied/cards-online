@@ -8,15 +8,12 @@ export const SocketProvider = ({children} : any) => {
     const socketRef = useRef<Socket | null>(null);
 
     if (!socketRef.current) {
-        socketRef.current = io(URL);
+        socketRef.current = io(URL, {
+            autoConnect: true
+        });
     }
+
     
-    // useEffect(() => {
-    //     return () => {
-    //         console.log("disconnecting socket")
-    //         socketRef.current?.disconnect();
-    //     }
-    // }, [])
 
     return (
         <SocketContext.Provider value={socketRef.current}>

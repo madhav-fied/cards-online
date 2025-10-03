@@ -20,7 +20,7 @@ const STANDARD_DECK: Array<ICard> = _HOUSES.flatMap((house) => {
 
 interface IHand {
     wager: string,
-    status: "playing" | "standing" | "busted" | "idle",
+    status: "playing" | "standing" | "busted" | "waiting",
     cards: Array<ICard>
 }
 
@@ -37,7 +37,7 @@ interface IDealer {
 
 export interface ITable {
     tableId: string,
-    phase: "playing" | "ended" | "waiting",
+    phase: "playing" | "ended" | "lobby",
     turn: string,
     dealer: IDealer,
     players: Array<IPlayers>,
@@ -105,12 +105,13 @@ export const getNewGame = (currentRoom: Room): ITable => {
             cards: round.dealerCards,
         },
         players: round.playerCards.map((cards, idx) => {
+            let player = currentRoom.players[idx]
             return {
-                playerId: currentRoom.players[idx].playerId,
-                name: currentRoom.players[idx].playerName,
+                playerId: player.playerId,
+                name: player.playerName,
                 bank: "100",
                 hand: {
-                    status: "playing",
+                    status: idx == 0 ? "playing" : "waiting" ,
                     wager: "5",
                     cards: cards,
                 }
@@ -118,7 +119,6 @@ export const getNewGame = (currentRoom: Room): ITable => {
         })
     }
 }
-
 
 export const updateBanks = (game: ITable, result: IResult | undefined) => {
     if (!result) return game;
@@ -130,5 +130,20 @@ export const updateBanks = (game: ITable, result: IResult | undefined) => {
             }
         })
     })
+    return game;
+}
+
+export const dealFreshForPlayer = (game: ITable, playerId: string) => {
+    game.players.forEach((player) => {
+        if (player.playerId == playerId && player.hand.status != "playing") {
+            let newHand = []
+            for (let c = 0; c < 2; c++) {
+                newHand.push(game.deck[game.cardIdx++])
+            }
+
+            player.hand.cards = newHand;
+        }
+    })
+
     return game;
 }

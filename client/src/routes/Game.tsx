@@ -7,8 +7,6 @@
 // box
 import Grid from '@mui/material/Grid';
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography"
-import Avatar from "@mui/material/Avatar"
 import {GamblerCard} from "../components/GamblerCard"
 import {Player} from "../components/Player"
 import {Dealer} from "../components/Dealer"
@@ -16,19 +14,10 @@ import { useSocket } from '../socketLib/socketContext';
 import { useGame } from '../components/GameContext';
 import { useEffect, useState } from 'react';
 import { useTable, type ITable } from '../components/TableContext';
-import { Button } from '@mui/material';
 import { ResultsModal, type IResultsProps } from '../components/ResultsModal';
 
 
-const sxNavbar: any = {
-	bgcolor: '#cfe8fc',
-	width: '100vw',
-	height: '5vh',
-	padding: '0.5vh',
-	display: 'flex',
-	justifyContent: 'space-between',
-	alignItems: 'center',
-}
+
 
 const sxTable: any = {
 //	border: '1px solid red',
@@ -55,7 +44,7 @@ const sxGrid: any = {
 
 
 export const Game = () => {
-	const {playerId, gameId} = useGame();
+	const {playerId} = useGame();
 	const socket = useSocket();
 	const {tableState, setTableState} = useTable();
 	const [result, setResult] = useState<IResultsProps | undefined>(undefined);
@@ -73,32 +62,11 @@ export const Game = () => {
 		})
 	}, [])
 
-	function getGame() {
-		socket.timeout(5000).emit("get_game", gameId, playerId, (err: any, res: any) => {
-			if (err) {
-				console.error(err);
-				return;
-			}
-
-			if (res.type == 'error'){
-				throw new Error(res.message);
-			}
-			setTableState(res.state);
-			setResult(undefined);
-		});
-	}
-
-
 	return (
 		<>
-			<Box id="navbar" sx={sxNavbar}>
-				<Typography variant="h4">BlackJack</Typography>
-				<Avatar>N</Avatar>
-			</Box>
 			{ 
-				tableState.phase == 'waiting' ? (
-					<Button onClick={getGame}> Click to Begin </Button>	
-				):(
+				tableState.phase != "lobby" && 
+				(
 					<>
 					<Box id="game" sx={sxGame}>
 
@@ -118,7 +86,7 @@ export const Game = () => {
 										if (player.playerId != playerId) return null;
 
 										return (
-											<Grid size={6}>
+											<Grid size={12}>
 												<Player cards={player.hand.cards} name={player.name} bank={player.bank} wager={player.hand.wager} status={player.hand.status}/>
 											</Grid>
 										)
