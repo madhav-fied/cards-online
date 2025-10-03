@@ -7,8 +7,6 @@
 // box
 import Grid from '@mui/material/Grid';
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography"
-import Avatar from "@mui/material/Avatar"
 import {GamblerCard} from "../components/GamblerCard"
 import {Player} from "../components/Player"
 import {Dealer} from "../components/Dealer"
@@ -19,15 +17,7 @@ import { useTable, type ITable } from '../components/TableContext';
 import { ResultsModal, type IResultsProps } from '../components/ResultsModal';
 
 
-const sxNavbar: any = {
-	bgcolor: '#cfe8fc',
-	width: '100vw',
-	height: '5vh',
-	padding: '0.5vh',
-	display: 'flex',
-	justifyContent: 'space-between',
-	alignItems: 'center',
-}
+
 
 const sxTable: any = {
 //	border: '1px solid red',
@@ -74,10 +64,6 @@ export const Game = () => {
 
 	return (
 		<>
-			<Box id="navbar" sx={sxNavbar}>
-				<Typography variant="h4">BlackJack</Typography>
-				<Avatar></Avatar>
-			</Box>
 			{ 
 				tableState.phase != "lobby" && 
 				(

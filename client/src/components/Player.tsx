@@ -17,6 +17,7 @@ import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useSocket } from '../socketLib/socketContext';
 import { useGame } from './GameContext';
 import { countHand } from '../utils/cards';
+import { Badge } from '@mui/material';
 
 export interface PlayerProps {
 	name: string
@@ -44,6 +45,11 @@ const sxCardContent: any = {
 	gap: 1,
 }
 
+const sxPlayerIndicator: any = {
+	display: 'flex',
+	flexDirection: 'row',
+	gap: 1,
+}
 
 
 export const Player = ({name, cards, bank, wager, status}: PlayerProps) => {
@@ -85,7 +91,10 @@ export const Player = ({name, cards, bank, wager, status}: PlayerProps) => {
 				<Card raised sx={{backgroundColor: cardStatusColor}}>
 					<CardContent sx={sxCardContent}>
 						<Box sx={sxPlayerHeader}>
-							<Typography variant="h5">{name}</Typography>
+							<Box sx={sxPlayerIndicator}>
+								<Typography variant="h5">{name}</Typography>
+								{ status == 'playing' && <Chip label="active" color="success" /> }
+							</Box>
 							<Chip label={`$${bank}`} color="warning" />
 						</Box>
 						<Box sx={sxPlayerHeader}>

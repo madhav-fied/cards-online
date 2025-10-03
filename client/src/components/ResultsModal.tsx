@@ -59,11 +59,11 @@ export const ResultsModal = ({dealerValue, players}: IResultsProps) => {
 
             socket.disconnect();
             socket.connect();
-            // TODO: default state for games??
-            // NB: always set to phase lobby to make sure loading of init stages work fine
-            setTableState({hostId: "default", phase: "lobby"});
-            navigate("/")
         });
+        // TODO: default state for games??
+        // NB: always set to phase lobby to make sure loading of init stages work fine    
+        setTableState({hostId: "default", phase: "lobby"});
+        navigate("/")
     }, [])
 
     const onGameRejoin = useCallback(() => {

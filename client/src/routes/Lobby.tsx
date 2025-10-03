@@ -1,12 +1,15 @@
 import Box from "@mui/material/Box"
-import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Chip from "@mui/material/Chip";
 import { useGame } from "../components/GameContext";
 import { useTable, type ITable } from "../components/TableContext";
 import { useSocket } from "../socketLib/socketContext";
 import {useState, useEffect} from "react"
 import { useNavigate } from "react-router";
+import Divider from "@mui/material/Divider";
 
 export interface Player {
 	playerId: string;
@@ -19,18 +22,34 @@ export interface Lobby {
 	players: Array<Player>;
 }
 
-const sxNavbar: any = {
-	bgcolor: '#cfe8fc',
-	width: '100vw',
-	height: '5vh',
-	padding: '0.5vh',
+const sxDetails: any = {
+	width: '50vw',
+	height: '50vh',
+	margin: 'auto',
+	border: '2px solid #00008B',
+	borderRadius: '5%',
 	display: 'flex',
-	justifyContent: 'space-between',
+    flexDirection: 'column',
 	alignItems: 'center',
+	justifyContent: 'space-evenly'
 }
 
 const sxLobby: any = {
+	width: '100vw',
+	height: '100vh',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center'
+}
 
+const sxPlayerList: any = {
+    width: "60%",
+}
+
+const sxPlayerItem: any = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: 1
 }
 
 export const Lobby = () => {
@@ -68,25 +87,33 @@ export const Lobby = () => {
 
     return (
         <>
-            <Box id="navbar" sx={sxNavbar}>
-				<Typography variant="h4">BlackJack</Typography>
-				<Avatar></Avatar>
-			</Box>
-            <Box id="lobby" sx={sxLobby}>
-                <Typography variant="h5">Lobby</Typography>
-                {
-                    lobby?.players?.map((player: Player) => {
-                        return (
-                            <Typography variant="h6">
-                                {player.playerName}
-                            </Typography>
-                        )
-                    })
-                }
-                {
-                    
-                    playerId == lobby?.host && <Button onClick={beginGame}>Click to begin</Button>
-                }
+            <Box id="lobby-page" sx={sxLobby}>
+                <Box id="details" sx={sxDetails}>
+                    <Typography variant="h4">Gambler's Lobby</Typography>
+                    <List sx={sxPlayerList}>
+                    {
+                        lobby?.players?.map((player: Player) => {
+                            return (
+                                <>
+                                    <ListItem sx={sxPlayerItem}>
+                                        <Typography variant="h5">
+                                            {player.playerName}
+                                        </Typography>
+                                        <Box>
+                                            { player.playerId == lobby?.host  && <Chip label="host" variant="outlined" color="info" /> }
+                                            { player.playerId == playerId && <Chip label="you" variant="outlined" color="info" /> }
+                                        </Box>
+                                    </ListItem>
+                                    <Divider />
+                                </>
+                            )
+                        })
+                    }
+                    </List>
+                    {
+                        <Button variant="outlined" disabled={playerId != lobby?.host} onClick={beginGame}>Click to begin</Button>
+                    }
+                </Box>
             </Box>
         </>
     )
