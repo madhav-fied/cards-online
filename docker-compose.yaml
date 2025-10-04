@@ -5,6 +5,7 @@ services:
       - "56789:56789"
     volumes:
       - ./server:/app
+      - /app/dist
       - /app/node_modules
 
   client:
