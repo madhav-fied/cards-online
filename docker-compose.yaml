@@ -7,6 +7,8 @@ services:
       - ./server:/app
       - /app/dist
       - /app/node_modules
+    networks:
+      - cards_online_nw
 
   client:
     build: ./client
@@ -17,3 +19,9 @@ services:
       - /app/node_modules
     depends_on:
       - server
+    networks:
+      - cards_online_nw
+  
+networks:
+  cards_online_nw:
+    driver: bridge
