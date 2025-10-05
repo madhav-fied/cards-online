@@ -76,7 +76,7 @@ export const Game = () => {
 
 							<Grid size={12}>
 								{
-									tableState?.dealer?.cards &&	<Dealer cards={tableState?.dealer.cards} canPlay={tableState.turn == "dealer"} />
+									tableState?.dealer?.cards &&	<Dealer cards={tableState?.dealer.cards} />
 								}
 							</Grid>
 

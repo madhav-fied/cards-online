@@ -43,29 +43,5 @@ export const CardListShowCase: Story = {
   },
 };
 
-export const CardListShowCaseStacked: Story = {
-  args: {
-	  cards: [
-		{
-			value: "K",
-			house: "♥",
-		},
-		{
-			value: "Q",
-			house: "♥",
-		},
-		{
-			value: "J",
-			house: "♥",
-		},
-		{
-			value: "A",
-			house: "♥",
-		},
-	  ],
-	  is_stacked: true,
-
-  },
-};
 
 

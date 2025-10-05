@@ -17,7 +17,6 @@ import TouchAppIcon from '@mui/icons-material/TouchApp';
 import { useSocket } from '../socketLib/socketContext';
 import { useGame } from './GameContext';
 import { countHand } from '../utils/cards';
-import { Badge } from '@mui/material';
 
 export interface PlayerProps {
 	name: string

@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc -b && vite build",
+    "build": "pnpm clean && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
@@ -20,7 +21,8 @@
     "react-dom": "^19.1.0",
     "react-router": "^7.7.1",
     "socket.io-client": "^4.8.1",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4",
