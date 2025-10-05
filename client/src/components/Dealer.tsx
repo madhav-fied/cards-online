@@ -11,7 +11,6 @@ import { countHand } from '../utils/cards';
 
 export interface DealerProps {
 	cards: Array<CardProps>;
-	canPlay: boolean
 }
 
 const sxDealer: any = {

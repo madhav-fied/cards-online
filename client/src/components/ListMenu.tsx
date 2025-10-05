@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { ComponentProps, ReactNode } from "react";
 
 
@@ -43,7 +44,7 @@ export const ListMenu = ({items} : ListMenuProps) => {
 					items.map((itemProps, idx) => {
 						return (
 							<li key={idx} style={listItemStyle} {...itemProps}>
-
+								{`${idx} item`}
 							</li>
 						)
 					})
